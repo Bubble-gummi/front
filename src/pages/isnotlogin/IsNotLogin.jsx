@@ -28,8 +28,8 @@ const IsNotLogin = ()=>{
                 <S.header>
                     <div>로그인이 되어있지 않습니다.</div>
                 </S.header>
-                <button onClick={handleGoBack}>이전 페이지로 돌아가기</button>
-                <button onClick={handleLoginClick}>Login</button>
+                <button className='back-button' onClick={handleGoBack}>이전 페이지로 돌아가기</button>
+                <button className='login-button' onClick={handleLoginClick}>Login</button>
             
                 {isLoginOpen && <Login onClose={handleLoginModal} />}
             </S.Container>

@@ -8,13 +8,15 @@ const MyBlog = () => {
   const [posts, setPosts] = useState([
     {
       id: 1,
-      title: '내가 작성한 영화 리뷰 1',
-      content: '이번에 본 영화에 대한 리뷰입니다.'
+      subject: '기생충 영화 리뷰(게시글 제목)',
+      title:'기생충',
+      content: '기생충 영화에 대한 리뷰입니다.'
     },
     {
       id: 2, 
-      title: '내가 작성한 영화 추천 글',
-      content: '최근 본 영화 중 추천할 만한 작품을 소개합니다.'
+      subject: '올드보이 영화 리뷰(게시글 제목)',
+      title:'올드보이',
+      content: '올드보이 영화에 대한 리뷰입니다.'
     }
   ]);
   const handleCreatePost = () => {
@@ -29,10 +31,10 @@ const MyBlog = () => {
         {posts.map((post) => (
           <S.PostItem key={post.id}>
             <S.PostTitle>
-                <a href={`/post/${post.id}`}>{post.title}</a>
+                <a href={`/movieblog/post/${post.id}`}>{post.subject}</a>
             </S.PostTitle>
             <S.PostContent>
-                {post.content}
+              {post.content}
             </S.PostContent>
           </S.PostItem>
         ))}

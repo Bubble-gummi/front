@@ -5,7 +5,6 @@ import S from './style';
 const CreateBlog = () => {
   const [title, setTitle] = useState('');
   const [movie, setMovie] = useState('');
-  const [score, setScore] = useState('');
   const [review, setReview] = useState('');
   const navigate = useNavigate();
 
@@ -13,7 +12,7 @@ const CreateBlog = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    console.log({ title, score, review });
+    console.log({ title, movie, review });
 
     
     navigate('/movieblog');
@@ -47,25 +46,6 @@ const CreateBlog = () => {
                   onChange={(e) => setMovie(e.target.value)}
                   required></input>
               </S.Input>
-            </div>
-
-            <div>
-              <label htmlFor="score">평점:</label>
-              <S.Select>
-                <select
-                id="score"
-                value={score}
-                onChange={(e) => setScore(e.target.value)}
-                required
-                >
-                <option value="">선택하세요</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                </select>
-              </S.Select>
             </div>
 
             <div>

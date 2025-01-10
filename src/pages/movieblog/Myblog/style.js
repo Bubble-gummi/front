@@ -145,6 +145,7 @@ S.PostTitle = styled.h2`
 S.PostContent = styled.p`
     color: #666;
 `;
+
 S.CreatePostButton = styled.div`
     display: block;
     margin-top: 30px;

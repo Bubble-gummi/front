@@ -35,8 +35,10 @@ S.Header = styled.header`
 
 S.PostList = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   grid-gap: 30px;
+  height: 100px;
+
 `;
 
 S.PostItem = styled.div`
@@ -46,7 +48,7 @@ S.PostItem = styled.div`
   padding: 20px;
 `;
 
-S.PostTitle = styled.h2`
+S.PostSubject = styled.h2`
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 10px;
@@ -60,6 +62,13 @@ S.PostTitle = styled.h2`
     }
   }
 `;
+S.PostTitle = styled.div`
+    font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color : black;
+
+`
 
 S.PostContent = styled.p`
   color: #666;
@@ -81,6 +90,34 @@ S.CreatePostButton = styled.button`
   &:hover {
     background-color: #0056b3;
   }
+`;
+
+S.PostDetailContainer = styled.div`
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+`;
+
+S.PostDetailSubject = styled.h1`
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 10px;
+`;
+
+S.PostDetailTitle = styled.h2`
+  font-size: 2rem;
+  color: #555;
+  margin-bottom: 15px;
+`;
+
+S.PostDetailContent = styled.p`
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #666;
 `;
 
 export default S;
