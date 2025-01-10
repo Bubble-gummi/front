@@ -1,14 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import S from './style';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const Main = () => {
-  const movies = [
-    { id: 1, title: "뜬금마켓", img: "movie1.jpg" },
-    { id: 2, title: "강철부대", img: "movie2.jpg" },
-    { id: 3, title: "런닝맨", img: "movie3.jpg" },
-    { id: 4, title: "지옥에서 온", img: "movie4.jpg" },
-    { id: 5, title: "나 혼자 산다", img: "movie5.jpg" },
-  ];
   
   const posts = [
     {
@@ -30,6 +25,17 @@ const Main = () => {
       img: "post1.jpg",
     },
   ];
+  const [data, setData] = useState([]);
+
+  useEffect(()=>{
+    axios.get('http://localhost:8080/main').then((response)=>{
+      setData(response.data.movies);
+      console.log(response.data.movies)
+    })
+    .catch((error)=>{
+      console.log('Error',error)
+    })
+  },[])
   return (
     <div>
       <S.MainContent className="main-content">
@@ -37,14 +43,17 @@ const Main = () => {
           <S.title className='title'>
             <h2>상영</h2><h2 className='back'>무비</h2>
           </S.title>
-          <div className="movie-list">
-            {movies.map((movie) => (
-              <div key={movie.id} className="movie-item">
-                <img src={movie.img} alt={movie.title} />
-                <p>{movie.title}</p>
-              </div>
+          <S.wrapper className="wrapper">
+        {data.map((movie, id) => (
+          <S.Card key={id}>
+            <Link to={`/movie/moviereview?id=${movie.id}`} role="button" onClick={() => window.scrollTo(0, 0)}>
+              <div className="image-container">
+              <img src={`/image/${movie.id}.jpg`} alt={`Video ${movie.title}`} />
+             </div>
+              </Link>
+             </S.Card>
             ))}
-          </div>
+          </S.wrapper>
         </div>
         <div className="post-container">
         <S.title className='title'>
