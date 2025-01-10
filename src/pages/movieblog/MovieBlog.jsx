@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link  } from 'react-router-dom';
-import PostDetail from './PostDetail';
+import PostDetailContainer from './PostDetailContainer';
 import S from './style';
 
 const MovieBlog = () => {

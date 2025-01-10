@@ -1,10 +1,10 @@
 import React from 'react';
 import PostDetail from './PostDetail'; // 게시글 상세 컴포넌트 import
 
-const PostDetailContainer = ({ posts }) => {
+const PostDetailContainer = () => {
   return (
     <div>
-      <PostDetail posts={posts} />
+      <PostDetail />
     </div>
   );
 };
