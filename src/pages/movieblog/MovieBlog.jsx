@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState,useEffectnp } from 'react';
 import { useNavigate, Link  } from 'react-router-dom';
-import PostDetailContainer from './PostDetailContainer';
+import axios from "axios";
 import S from './style';
 
 const MovieBlog = () => {
@@ -72,6 +72,16 @@ const MovieBlog = () => {
   const truncateContent = (content) => {
     return content.length > 40 ? content.substring(0, 40) + '...' : content;
   }
+
+  // useEffect(()=>{
+  //   axios.get('http://localhost:8080/movieblog').then((response)=>{
+  //     setData(response.data.movies);
+  //     console.log(response.data.movies)
+  //   })
+  //   .catch((error)=>{
+  //     console.log('Error',error)
+  //   })
+  // },[])
 
   return (
     <S.Container>
