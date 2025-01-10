@@ -15,25 +15,22 @@ const MovieReview = () => {
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [editingContent, setEditingContent] = useState("");
   const [rating, setRating] = useState(0);
+  const [detaildata,setDetailData]=useState([]);
+  const [actors,setActors]=useState([])
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/main")
+      .get(`http://localhost:8080/movies/detail/${id}`)
       .then((response) => {
-        const movieData = response.data.movies;
-        const selectMovie = movieData.find((movie) => movie.id === parseInt(id));
-
-        if (selectMovie) {
-          setData(selectMovie);
-          console.log(selectMovie);
-        } else {
-          console.error("해당 ID의 영화를 찾을 수 없습니다.");
-        }
+        setDetailData(response.data.movie);
+        setActors(response.data.movie.actors)
+        console.log(response.data.movie)
+        console.log(response.data.movie.actors)
       })
-      .catch((error) => {
-        console.error("영화 데이터를 가져오는 중 오류 발생:", error);
-      });
-  }, [id]);
+      .catch((error)=>{
+        console.log('Error',error)
+      })
+    },[])
 
   const handleAddReview = () => {
     if (newReview.trim() === "") return;
@@ -77,20 +74,17 @@ const MovieReview = () => {
     setRating(index + 1);
   };
 
-  if (!data) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div>
       <S.wrapper className="wrapper">
         <S.Card className="mainimage">
-          <img src={`/image/${data.id}.jpg`} alt={data.title} />
+          <img src={`/image/${detaildata.id}.jpg`} alt={detaildata.title} />
         </S.Card>
         <S.imformation className="imformation">
           <h2>⭐⭐⭐⭐⭐</h2>
           <p>평점 : 5</p>
-          <div className="detail">{data.detail}</div>
+          <div className="detail">{detaildata.detail}</div>
+          <div className="detail">{detaildata.detail}</div>
         </S.imformation>
       </S.wrapper>
 
@@ -98,13 +92,13 @@ const MovieReview = () => {
         <div className="actor">
           <h1>연기자</h1>
           <S.CastContainer className="cast-container">
-              {/* {cast.map((actor, index) => (
+              {actors.map((actor, index) => (
               <S.ActorCard key={index} className="actor">
                 <img src={actor.img} alt={actor.name} />
                 <p>{actor.name}</p>
                 <p>{actor.role}</p>
               </S.ActorCard>
-            ))} */}
+            ))}
           </S.CastContainer>
         </div>
         <div className="comment">
