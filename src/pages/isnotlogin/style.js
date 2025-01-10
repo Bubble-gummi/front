@@ -9,20 +9,26 @@ S.Container = styled.div`
     padding: 200px 200px;
 
     button {
-        margin-left: 0.5rem;
-        padding: 0.5rem 1rem;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 1rem;
-        &:first-of-type {
+        &.back-button {
             background-color: red;
             color: white;
+            margin-left: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
         }
 
-        &:last-of-type {
+        &.login-button {
             background-color: #2980b9;
             color: white;
+            margin-left: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
         }
     }
 `
@@ -30,5 +36,7 @@ S.header = styled.div`
     font-Size : 3rem;
     margin-Bottom: 20px;
 `
+
+
 
 export default S;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useNavigate, Link  } from 'react-router-dom';
+import PostDetail from './PostDetail';
 import S from './style';
 
 const MovieBlog = () => {
@@ -8,12 +9,54 @@ const MovieBlog = () => {
   const [posts, setPosts] = useState([
     {
       id: 1,
-      title: '영화 리뷰 - 어벤져스: 엔드게임',
-      content: '이번에 개봉한 어벤져스: 엔드게임은 마블 시네마틱 유니버스의 대미를 장식하는 작품입니다. 캐릭터들의 감동적인 이야기와 화려한 액션 장면이 인상깊었습니다.'
+      subject: '파이트클럽 영화 리뷰(게시글 제목)',
+      title:'파이트클럽',
+      content: '기생충 영화에 대한 리뷰입니다.2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.기생충 영화에 대한 리뷰입니다.2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.기생충 영화에 대한 리뷰입니다.2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
     },
     {
       id: 2,
-      title: '영화 추천 - 기생충',
+      subject: '기생충 영화 리뷰(게시글 제목)',
+      title: '기생충',
+      content: '2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
+    },
+    {
+      id: 3,
+      subject: '3 영화 리뷰(게시글 제목)',
+      title: '기생충',
+      content: '2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
+    },
+    {
+      id: 4,
+      subject: '4 영화 리뷰(게시글 제목)',
+      title: '기생충',
+      content: '2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
+    }
+    ,
+    {
+      id: 5,
+      subject: '5 영화 리뷰(게시글 제목)',
+      title: '기생충',
+      content: '2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
+    }
+    ,
+    {
+      id: 6,
+      subject: '6 영화 리뷰(게시글 제목)',
+      title: '기생충',
+      content: '2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
+    }
+    ,
+    {
+      id: 7,
+      subject: '7 영화 리뷰(게시글 제목)',
+      title: '기생충',
+      content: '2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
+    }
+    ,
+    {
+      id: 8,
+      subject: '8 영화 리뷰(게시글 제목)',
+      title: '기생충',
       content: '2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
     }
   ]);
@@ -24,6 +67,10 @@ const MovieBlog = () => {
     }else{
       navigate("/myblog");
     }
+  }
+
+  const truncateContent = (content) => {
+    return content.length > 40 ? content.substring(0, 40) + '...' : content;
   }
 
   return (
@@ -37,12 +84,18 @@ const MovieBlog = () => {
       <S.PostList>
         {posts.map((post) => (
           <S.PostItem key={post.id}>
-            <S.PostTitle><a href={`/post/${post.id}`}>{post.title}</a></S.PostTitle>
-            <S.PostContent>{post.content}</S.PostContent>
+            <S.PostSubject>
+            <Link to={`/movieblog/post/${post.id}`} role="button" onClick={() => window.scrollTo(0, 0)}>
+              {post.subject}
+            </Link>
+            </S.PostSubject>
+            <S.PostTitle>{post.title}</S.PostTitle>
+            <S.PostContent>{truncateContent(post.content)}</S.PostContent>
           </S.PostItem>
         ))}
       </S.PostList>
     </S.Container>
+    
   );
 };
 
