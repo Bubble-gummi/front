@@ -53,8 +53,18 @@ const Layout = () => {
     setIsSignUpOpen(true);
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
   const handleSignUpModal = () => {
     setIsSignUpOpen(false);
+  };
+  
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const handleSearchClick = () => {
+    navigate(`/search?query=${searchQuery}`);
   };
 
   return (
@@ -78,8 +88,14 @@ const Layout = () => {
           </NavLink>
           <div className="search-bar">
             <S.Serch>
-              <input type="text" placeholder="Search contents, people, collections, ..." />
+              <input 
+                type="text"
+                placeholder="Search contents, people, collections, ..."
+                value={searchQuery}
+                onChange={handleSearchChange}  
+              />
             </S.Serch>
+            <button onClick={handleSearchClick}>Search</button>
             <button onClick={handleLoginClick}>Login</button>
             <button onClick={handleSignUpClick}>Sign Up</button>
           </div>
