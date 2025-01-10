@@ -4,28 +4,8 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 const Main = () => {
-  
-  const posts = [
-    {
-      id: 1,
-      title: "인천행",
-      description: "지하철 타고 떠나는 나홀로 인천 당일치기 여행.",
-      img: "post1.jpg",
-    },
-    {
-      id: 2,
-      title: "인천행",
-      description: "지하철 타고 떠나는 나홀로 인천 당일치기 여행.",
-      img: "post1.jpg",
-    },
-    {
-      id: 3,
-      title: "인천행",
-      description: "지하철 타고 떠나는 나홀로 인천 당일치기 여행.",
-      img: "post1.jpg",
-    },
-  ];
   const [data, setData] = useState([]);
+  const [postdata,setPostData]=useState([]);
 
   useEffect(()=>{
     axios.get('http://localhost:8080/main').then((response)=>{
@@ -36,6 +16,16 @@ const Main = () => {
       console.log('Error',error)
     })
   },[])
+  useEffect(()=>{
+    axios.get('http://localhost:8080/main').then((response)=>{
+      setPostData(response.data.posts);
+      console.log(response.data.posts)
+    })
+    .catch((error)=>{
+      console.log('Error',error)
+    })
+  },[])
+  const dateTime=postdata.createDate
   return (
     <div>
       <S.MainContent className="main-content">
@@ -44,7 +34,7 @@ const Main = () => {
             <h2>상영</h2><h2 className='back'>무비</h2>
           </S.title>
           <S.wrapper className="wrapper">
-        {data.map((movie, id) => (
+        {data.slice(0,5).map((movie, id) => (
           <S.Card key={id}>
             <Link to={`/movie/moviereview/${movie.id}`} role="button" onClick={() => window.scrollTo(0, 0)}>
               <div className="image-container">
@@ -60,11 +50,12 @@ const Main = () => {
             <h2>영화</h2><h2 className='back'>게시판</h2>
           </S.title>
           <div className="post-list">
-            {posts.map((post) => (
+            {postdata.map((post) => (
               <div key={post.id} className="post-item">
-                <img src={post.img} alt={post.title} />
-                <h3>{post.title}</h3>
-                <p>{post.description}</p>
+                <img src={`/image/${post.movie.id}.jpg`} alt={post.title} />
+                <h3>{post.subject}</h3>
+                <p>{post.content}</p>
+                <p className='bottom'>{post.createDate.split("T")[0]}</p>
               </div>
             ))}
           </div>
