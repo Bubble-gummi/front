@@ -46,7 +46,7 @@ const Main = () => {
           <S.wrapper className="wrapper">
         {data.map((movie, id) => (
           <S.Card key={id}>
-            <Link to={`/movie/moviereview?id=${movie.id}`} role="button" onClick={() => window.scrollTo(0, 0)}>
+            <Link to={`/movie/moviereview/${movie.id}`} role="button" onClick={() => window.scrollTo(0, 0)}>
               <div className="image-container">
               <img src={`/image/${movie.id}.jpg`} alt={`Video ${movie.title}`} />
              </div>
