@@ -36,7 +36,7 @@ const router = createBrowserRouter([
         element : <WeekMovieContainer/>
       },
       {
-        path : "/movie/moviereview/",
+        path : "/movie/moviereview/:id",
         element : <MovieReviewContainer/>
       },
       {
