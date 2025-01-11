@@ -8,35 +8,33 @@ const Login = ({ onClose, setLoggedIn }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  axios.defaults.withCredentials = true;  // 쿠키 포함 설정
+  const formData = new FormData();
+  formData.append('username', email);
+  formData.append('password', password);
 
+
+  // 로그인 요청 함수
+  const login = async () => {
     try {
-
-      const response = await axios.post(
-        'http://localhost:8080/user/login', 
-        `email=${email}&password=${password}`, 
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded', 
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        setSuccess('로그인 성공!');
-        setError('');
-        setLoggedIn(true); 
-        onClose(); 
-      }
-    } catch (err) {
-      if (err.response && err.response.status === 401) {
-        setError('로그인 실패! 아이디 또는 비밀번호를 확인해주세요.');
-      } else {
-        setError('서버 오류! 다시 시도해주세요.');
-      }
-      setSuccess('');
+      const response = await axios.post('http://localhost:8080/login', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data' // 폼 데이터 전송 시 설정
+        },
+        withCredentials: true, // 쿠키 포함
+      });
+    
+    console.log('로그인 성공', response.data);
+    } catch (error) {
+    console.error('로그인 실패:', error);
     }
+    };
+    
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();  // 폼 제출 시 새로고침 방지
+
+    await login();  // 로그인 시도
   };
 
   return (
