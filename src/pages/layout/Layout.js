@@ -93,6 +93,11 @@ const Layout = () => {
                 placeholder="Search contents, people, collections, ..."
                 value={searchQuery}
                 onChange={handleSearchChange}  
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearchClick(); // Enter 키가 눌리면 검색 실행
+                  }
+                }}
               />
             </S.Serch>
             <button onClick={handleSearchClick}>Search</button>

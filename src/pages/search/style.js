@@ -42,10 +42,6 @@ S.Card = styled.div`
   transition: transform 0.3s ease-in-out;
   text-align: center;
 
-  &:hover {
-    transform: scale(1.05);
-  }
-
   .image-container {
     width: 100%;
     height: 300px;
@@ -62,6 +58,7 @@ S.Card = styled.div`
     &:hover img {
       transform: scale(1.1);
     }
+
   }
 
   .movie-title {
