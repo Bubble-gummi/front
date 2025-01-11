@@ -17,6 +17,7 @@ const MovieReview = () => {
   const [rating, setRating] = useState(0);
   const [detaildata,setDetailData]=useState([]);
   const [actors,setActors]=useState([])
+  const [reviews,setReviews]=useState([])
 
   useEffect(() => {
     axios
@@ -24,8 +25,10 @@ const MovieReview = () => {
       .then((response) => {
         setDetailData(response.data.movie);
         setActors(response.data.movie.actors)
+        setReviews(response.data.reviews)
         console.log(response.data.movie)
         console.log(response.data.movie.actors)
+        console.log(response.data.reviews)
       })
       .catch((error)=>{
         console.log('Error',error)

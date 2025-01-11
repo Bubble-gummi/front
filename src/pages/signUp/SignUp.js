@@ -28,11 +28,7 @@ const SignUp = ({ onClose }) => {
           email: email,
           phoneNumber: phoneNumber,
         }),
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded', 
-          },
-        }
+
       );
 
       if (response.status === 200) {
