@@ -49,12 +49,17 @@ S.Header = styled.div`
       cursor: pointer;
       font-size: 1rem;
 
-      &:first-of-type {
+      &:nth-of-type(1) {
+        background-color: red;
+        color: white;
+      }
+
+      &:nth-of-type(2) {
         background-color: #2980b9;
         color: white;
       }
 
-      &:last-of-type {
+      &:nth-of-type(3) {
         background-color: #27ae60;
         color: white;
       }

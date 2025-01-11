@@ -1,4 +1,4 @@
-import React, { useState,useEffectnp } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link  } from 'react-router-dom';
 import axios from "axios";
 import S from './style';
@@ -6,60 +6,9 @@ import S from './style';
 const MovieBlog = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      subject: '파이트클럽 영화 리뷰(게시글 제목)',
-      title:'파이트클럽',
-      content: '기생충 영화에 대한 리뷰입니다.2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.기생충 영화에 대한 리뷰입니다.2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.기생충 영화에 대한 리뷰입니다.2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
-    },
-    {
-      id: 2,
-      subject: '기생충 영화 리뷰(게시글 제목)',
-      title: '기생충',
-      content: '2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
-    },
-    {
-      id: 3,
-      subject: '3 영화 리뷰(게시글 제목)',
-      title: '기생충',
-      content: '2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
-    },
-    {
-      id: 4,
-      subject: '4 영화 리뷰(게시글 제목)',
-      title: '기생충',
-      content: '2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
-    }
-    ,
-    {
-      id: 5,
-      subject: '5 영화 리뷰(게시글 제목)',
-      title: '기생충',
-      content: '2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
-    }
-    ,
-    {
-      id: 6,
-      subject: '6 영화 리뷰(게시글 제목)',
-      title: '기생충',
-      content: '2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
-    }
-    ,
-    {
-      id: 7,
-      subject: '7 영화 리뷰(게시글 제목)',
-      title: '기생충',
-      content: '2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
-    }
-    ,
-    {
-      id: 8,
-      subject: '8 영화 리뷰(게시글 제목)',
-      title: '기생충',
-      content: '2019년 칸 영화제 황금종려상을 수상한 기생충은 사회 계층 간 갈등을 흥미롭게 다룬 작품입니다. 배우들의 연기와 연출이 돋보였습니다.'
-    }
-  ]);
+
+  const [posts, setPosts] = useState([]);
+  const [error, setError] = useState(null); // 에러 상태
 
   const handleMyBlogClick = () =>{
     if(!isLoggedIn){
@@ -73,15 +22,21 @@ const MovieBlog = () => {
     return content.length > 40 ? content.substring(0, 40) + '...' : content;
   }
 
-  // useEffect(()=>{
-  //   axios.get('http://localhost:8080/movieblog').then((response)=>{
-  //     setData(response.data.movies);
-  //     console.log(response.data.movies)
-  //   })
-  //   .catch((error)=>{
-  //     console.log('Error',error)
-  //   })
-  // },[])
+  useEffect(() => {
+    axios
+    .get('http://localhost:8080/main/posts')
+    .then((response) => {
+      console.log('Response Data:', response.data.posts); // 데이터 구조 확인
+      setPosts(response.data.posts);// posts를 추출
+    })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+        setError('데이터를 가져오는 중 문제가 발생했습니다.'); // 에러 상태 설정
+      });
+  }, []);
+  
+  // 에러가 있을 때 표시
+  if (error) return <p>{error}</p>;
 
   return (
     <S.Container>
@@ -95,11 +50,11 @@ const MovieBlog = () => {
         {posts.map((post) => (
           <S.PostItem key={post.id}>
             <S.PostSubject>
-            <Link to={`/movieblog/post/${post.id}`} role="button" onClick={() => window.scrollTo(0, 0)}>
-              {post.subject}
-            </Link>
+              <Link to={`/movieblog/post/${post.id}`} role="button">
+                {post.subject} {/* 게시글 제목 */}
+              </Link>
             </S.PostSubject>
-            <S.PostTitle>{post.title}</S.PostTitle>
+            <S.PostTitle>{post.movie.title}</S.PostTitle>
             <S.PostContent>{truncateContent(post.content)}</S.PostContent>
           </S.PostItem>
         ))}
