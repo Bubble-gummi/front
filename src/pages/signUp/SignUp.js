@@ -8,11 +8,9 @@ const SignUp = ({ onClose }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
 
     if (password !== confirmPassword) {
       setError('비밀번호가 일치하지 않습니다!');
@@ -27,14 +25,13 @@ const SignUp = ({ onClose }) => {
           password: password,
           email: email,
           phoneNumber: phoneNumber,
-        }),
-
+        })
       );
 
       if (response.status === 200) {
-        setSuccess('회원가입 성공!');
-        setError(''); 
-        onClose(); 
+        alert('회원가입에 성공했습니다!'); // 성공 메시지 알림
+        setError(''); // 에러 메시지 초기화
+        onClose(); // 모달 닫기
       }
     } catch (err) {
       if (err.response && err.response.status === 400) {
@@ -42,7 +39,6 @@ const SignUp = ({ onClose }) => {
       } else {
         setError('서버 오류! 다시 시도해주세요.');
       }
-      setSuccess(''); 
     }
   };
 
@@ -84,8 +80,8 @@ const SignUp = ({ onClose }) => {
             />
           </S.password>
 
+          {/* 에러 메시지 */}
           {error && <div style={{ color: 'red' }}>{error}</div>}
-          {success && <div style={{ color: 'green' }}>{success}</div>}
 
           <S.PhoneNumber>
             <input

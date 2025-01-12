@@ -13,6 +13,7 @@ import MyReviewContainer from '../pages/mypage/myreviewlist/MyReviewContainer';
 import IsNotLoginContainer from '../pages/isnotlogin/IsNotLoginContainer';
 import PostDetailContainer from '../pages/movieblog/PostDetailContainer';  
 import SearchContiner from '../pages/search/SearchContainer';
+import ModifyContainer from '../pages/movieblog/Myblog/ModifyContainer';
 
 const router = createBrowserRouter([
   {
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
       {
         path: "/search",
         element: <SearchContiner/>
+      },
+      {
+        path : "/modify/:id",
+        element : <ModifyContainer/>
       }
     ]
   }
