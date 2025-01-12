@@ -29,7 +29,7 @@ const Login = ({ onClose, setLoggedIn }) => {
       setError('');
       
       // 로그인 성공 시 세션 정보 저장
-      localStorage.setItem('user', JSON.stringify(response.data)); // 로그인 정보 로컬 스토리지에 저
+      localStorage.setItem('user', JSON.stringify(response.data)); // 로그인 정보 로컬 git 
       onClose(); // 로그인 모달 닫기
       navigate('/', { state: { userDetailData: response.data } }); // 메인 페이지로 이동
       window.location.reload(); // 페이지 새로고침
