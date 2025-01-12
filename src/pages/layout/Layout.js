@@ -1,41 +1,39 @@
-import React, { useState } from 'react';
-import {NavLink, Outlet, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Footer from './footer/Footer';
 import S from './style';
 import SignUp from '../signUp/SignUp';
 import Login from '../login/Login';
-
+import axios from 'axios';
 
 const Layout = () => {
   const navigate = useNavigate();
-  const movies = [
-    { id: 1, title: "뜬금마켓", img: "movie1.jpg" },
-    { id: 2, title: "강철부대", img: "movie2.jpg" },
-    { id: 3, title: "런닝맨", img: "movie3.jpg" },
-    { id: 4, title: "지옥에서 온", img: "movie4.jpg" },
-    { id: 5, title: "나 혼자 산다", img: "movie5.jpg" },
-  ];
-  
-  const posts = [
-    {
-      id: 1,
-      title: "인천행",
-      description: "지하철 타고 떠나는 나홀로 인천 당일치기 여행.",
-      img: "post1.jpg",
-    },
-    {
-      id: 2,
-      title: "인천행",
-      description: "지하철 타고 떠나는 나홀로 인천 당일치기 여행.",
-      img: "post1.jpg",
-    },
-    {
-      id: 3,
-      title: "인천행",
-      description: "지하철 타고 떠나는 나홀로 인천 당일치기 여행.",
-      img: "post1.jpg",
-    },
-  ];
+  const location = useLocation();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData)); // 로그인 상태가 유지된다면 사용자 정보 세팅
+    }
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      // 서버에 로그아웃 요청을 보내는 코드
+      // await axios.post('/logout'); // 서버에서 세션 종료 처리
+
+      // 세션을 클라이언트에서 종료
+      localStorage.removeItem('user');
+      alert('로그아웃 성공');
+      
+      // 로그아웃 후 메인 페이지로 이동
+      navigate('/');
+      window.location.reload(); // 페이지 새로고침
+    } catch (error) {
+      console.error('로그아웃 에러:', error);
+    }
+  };
 
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const handleLoginClick = () => {
@@ -53,16 +51,15 @@ const Layout = () => {
     setIsSignUpOpen(true);
   };
 
+  const handleSignUpModal = () => {
+    setIsSignUpOpen(false);
+  };
+
+  const [searchQuery, setSearchQuery] = useState('');
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  const handleSignUpModal = () => {
-    setIsSignUpOpen(false);
-  };
-  
-
-  const [searchQuery, setSearchQuery] = useState('');
   const handleSearchClick = () => {
     navigate(`/search?query=${searchQuery}`);
   };
@@ -71,7 +68,7 @@ const Layout = () => {
     <div>
       <S.Background className="background">
         <S.Header className="header">
-        <NavLink to={"/"}>
+          <NavLink to={"/"}>
             <h1>Nouvelle Vague</h1>
           </NavLink>
           <NavLink to={"/movie"}>
@@ -96,8 +93,14 @@ const Layout = () => {
               />
             </S.Serch>
             <button onClick={handleSearchClick}>Search</button>
-            <button onClick={handleLoginClick}>Login</button>
-            <button onClick={handleSignUpClick}>Sign Up</button>
+            {user ? (
+              <button onClick={handleLogout}>Logout</button> // 로그아웃 버튼
+            ) : (
+              <>
+                <button onClick={handleLoginClick}>Login</button>
+                <button onClick={handleSignUpClick}>Sign Up</button>
+              </>
+            )}
           </div>
         </S.Header>
         <S.Main className="main">
