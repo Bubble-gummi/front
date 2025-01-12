@@ -56,6 +56,15 @@ const MovieBlog = () => {
       <S.PostList>
         {posts.map((post) => (
           <S.PostItem key={post.id}>
+            {/* 영화 썸네일 이미지 */}
+            <S.MovieThumbnail>
+              <img
+                src={`/image/${post.movie.id}.jpg`} // MOVIE_ID에 해당하는 이미지
+                alt={`${post.movie.title} 썸네일`}
+                onError={(e) => (e.target.src = '/image/default.jpg')} // 이미지 없을 때 기본 이미지
+              />
+            </S.MovieThumbnail>
+
             <S.PostSubject>
               <Link to={`/movieblog/post/${post.id}`} role="button">
                 {post.subject} {/* 게시글 제목 */}
