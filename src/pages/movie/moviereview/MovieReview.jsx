@@ -21,6 +21,9 @@ const MovieReview = () => {
   const [averageRating, setAverageRating] = useState(0);
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('userDetail'))); // 로그인된 사용자 정보 로컬 스토리지에서 가져오기
   const [isLoginOpen, setIsLoginOpen] = useState(false); // 로그인 모달 상태
+  const [editingReviewId, setEditingReviewId] = useState(null); // 수정 중인 리뷰 ID
+  const [editedReview, setEditedReview] = useState(""); // 수정된 리뷰 내용
+  const [editedRating, setEditedRating] = useState(0); // 수정된 평점
 
   useEffect(() => {
     // 영화 상세 정보 및 리뷰 조회
@@ -128,6 +131,55 @@ const MovieReview = () => {
     }
   };
 
+  // 리뷰 수정 버튼 클릭 시 처리
+const handleEditClick = (review) => {
+  setEditingReviewId(review.id); // 수정 중인 리뷰 ID 설정
+  setEditedReview(review.content); // 기존 리뷰 내용 가져오기
+  setEditedRating(review.score); // 기존 평점 가져오기
+};
+
+// 리뷰 수정 저장
+const handleSaveEdit = async (reviewId) => {
+  try {
+    const formData = new FormData();
+    formData.append("score", editedRating);
+    formData.append("content", editedReview);
+
+    // 수정된 리뷰 서버에 전송
+    await axios.put(
+      `http://localhost:8080/mypage/reviews/${reviewId}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+
+    // 리뷰 목록 갱신
+    setReviews(
+      reviews.map((review) =>
+        review.id === reviewId
+          ? { ...review, content: editedReview, score: editedRating }
+          : review
+      )
+    );
+    setEditingReviewId(null); // 수정 상태 종료
+  } catch (error) {
+    console.error("리뷰 수정 중 오류 발생:", error);
+  }
+};
+
+  // 리뷰 수정 취소
+  const handleCancelEdit = () => {
+    setEditingReviewId(null); // 수정 상태 종료
+  };
+
+  // 별점 클릭 처리 (수정 중일 때)
+  const handleEditStarClick = (index) => {
+    setEditedRating(index + 1);
+  };
   return (
     <div>
       <S.wrapper className="wrapper">
@@ -239,21 +291,64 @@ const MovieReview = () => {
                       <span>{new Date(review.createDate).toLocaleDateString()}</span>
                       <span>평점: {review.score}</span>
                       {user && review.user && review.user.id === user.id && (
-                        <button
-                          style={{
-                            fontSize: "0.8rem",
-                            color: "red",
-                            background: "none",
-                            border: "none",
-                            cursor: "pointer",
-                          }}
-                          onClick={() => handleDeleteReview(review.id)}
-                        >
-                          삭제
-                        </button>
+                        <div>
+                          <button
+                            style={{
+                              fontSize: "0.8rem",
+                              color: "red",
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleDeleteReview(review.id)}
+                          >
+                            삭제
+                          </button>
+                          <button
+                            style={{
+                              fontSize: "0.8rem",
+                              color: "green",
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                            }}
+                            onClick={() => handleEditClick(review)}
+                          >
+                            수정
+                          </button>
+                        </div>
                       )}
                     </div>
-                    <div className="review-content">{review.content}</div>
+        
+                    {/* 수정 중인 리뷰일 때 */}
+                    {editingReviewId === review.id ? (
+                      <S.reviewinput>
+                        <div className="rating">
+                          {[...Array(5)].map((_, index) => (
+                            <span
+                              key={index}
+                              className={`star ${index < editedRating ? "active" : ""}`}
+                              style={{
+                                cursor: "pointer",
+                                color: index < editedRating ? "gold" : "gray",
+                              }}
+                              onClick={() => handleEditStarClick(index)}
+                            >
+                              ★
+                            </span>
+                          ))}
+                        </div>
+                        <input
+                          value={editedReview}
+                          onChange={(e) => setEditedReview(e.target.value)}
+                          placeholder="리뷰를 수정하세요..."
+                        />
+                        <button onClick={() => handleSaveEdit(review.id)}>저장</button>
+                        <button onClick={handleCancelEdit}>취소</button>
+                      </S.reviewinput>
+                    ) : (
+                      <div className="review-content">{review.content}</div>
+                    )}
                   </S.reviewitem>
                 ))
             ) : (
