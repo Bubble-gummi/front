@@ -1,40 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link  } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from "axios";
 import S from './style';
 
 const MovieBlog = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState(null); // 에러 상태
 
-  const handleMyBlogClick = () =>{
-    if(!isLoggedIn){
+  // 로그인 상태 확인
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setIsLoggedIn(true); // 로그인 상태 설정
+    }
+  }, []);
+
+  const handleMyBlogClick = () => {
+    if (!isLoggedIn) {
       navigate("/is-not-login");
-    }else{
+    } else {
       navigate("/myblog");
     }
-  }
+  };
 
   const truncateContent = (content) => {
     return content.length > 40 ? content.substring(0, 40) + '...' : content;
-  }
+  };
 
   useEffect(() => {
     axios
-    .get('http://localhost:8080/main/posts')
-    .then((response) => {
-      console.log('Response Data:', response.data.posts); // 데이터 구조 확인
-      setPosts(response.data.posts);// posts를 추출
-    })
+      .get('http://localhost:8080/main/posts')
+      .then((response) => {
+        console.log('Response Data:', response.data.posts); // 데이터 구조 확인
+        setPosts(response.data.posts); // posts를 추출
+      })
       .catch((error) => {
         console.error('Error fetching data:', error);
         setError('데이터를 가져오는 중 문제가 발생했습니다.'); // 에러 상태 설정
       });
   }, []);
-  
+
   // 에러가 있을 때 표시
   if (error) return <p>{error}</p>;
 
@@ -60,7 +67,6 @@ const MovieBlog = () => {
         ))}
       </S.PostList>
     </S.Container>
-    
   );
 };
 
