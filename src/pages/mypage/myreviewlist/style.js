@@ -70,6 +70,10 @@ S.title = styled.div`
 S.reviewitem =styled.div`
 border-bottom: 1px solid gray;
 margin-top: 10px;
+border-bottom: 2px solid black;
+&:hover {
+    cursor: pointer; /* 클릭 가능한 커서 표시 */
+  }
 
 `
 
