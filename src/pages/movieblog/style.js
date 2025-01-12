@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const S = {};
+
 S.Container = styled.div`
   width: 100%;
   max-width: 1200px;
@@ -37,8 +38,6 @@ S.PostList = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
   grid-gap: 30px;
-  height: 100px;
-
 `;
 
 S.PostItem = styled.div`
@@ -46,6 +45,28 @@ S.PostItem = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+S.MovieThumbnail = styled.div`
+  width: 100%;
+  height: 200px;
+  margin-bottom: 15px;
+  overflow: hidden;
+  border-radius: 8px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
 `;
 
 S.PostSubject = styled.h2`
@@ -62,13 +83,13 @@ S.PostSubject = styled.h2`
     }
   }
 `;
+
 S.PostTitle = styled.div`
-    font-size: 15px;
+  font-size: 15px;
   font-weight: bold;
   margin-bottom: 10px;
-  color : black;
-
-`
+  color: black;
+`;
 
 S.PostContent = styled.p`
   color: #666;
