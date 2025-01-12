@@ -1,80 +1,131 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import S from "./style";
 import axios from "axios";
+import Login from "../../login/Login"; // 로그인 모달 임포트
 
 const MovieReview = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const { id } = useParams();
+  const navigate = useNavigate();
 
-  const [data, setData] = useState(null); 
-  const [userReviews, setUserReviews] = useState([]); 
+  const [data, setData] = useState(null);
+  const [userReviews, setUserReviews] = useState([]);
   const [isWriting, setIsWriting] = useState(false);
   const [newReview, setNewReview] = useState("");
-  const [editingReviewId, setEditingReviewId] = useState(null);
-  const [editingContent, setEditingContent] = useState("");
   const [rating, setRating] = useState(0);
-  const [detaildata,setDetailData]=useState([]);
-  const [actors,setActors]=useState([])
-  const [reviews,setReviews]=useState([])
+  const [detaildata, setDetailData] = useState([]);
+  const [actors, setActors] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('userDetail'))); // 로그인된 사용자 정보 로컬 스토리지에서 가져오기
+  const [isLoginOpen, setIsLoginOpen] = useState(false); // 로그인 모달 상태
 
   useEffect(() => {
+    // 영화 상세 정보 및 리뷰 조회
     axios
       .get(`http://localhost:8080/movies/detail/${id}`)
       .then((response) => {
         setDetailData(response.data.movie);
-        setActors(response.data.movie.actors)
-        setReviews(response.data.reviews)
-        console.log(response.data.movie)
-        console.log(response.data.movie.actors)
-        console.log(response.data.reviews)
-      })
-      .catch((error)=>{
-        console.log('Error',error)
-      })
-    },[])
+        setActors(response.data.movie.actors);
+        setReviews(response.data.reviews);
 
-  const handleAddReview = () => {
+        // 평균 평점 계산
+        const totalRating = response.data.reviews.reduce(
+          (acc, review) => acc + review.score,
+          0
+        );
+        const avgRating =
+          response.data.reviews.length > 0
+            ? totalRating / response.data.reviews.length
+            : 0;
+        setAverageRating(avgRating.toFixed(1)); // 소수점 첫째자리까지 반영
+      })
+      .catch((error) => {
+        console.log("Error", error);
+      });
+  }, [id]);
+
+  // 로그인 클릭 시 모달 열기
+  const handleLoginClick = () => {
+    setIsLoginOpen(true); // 로그인 모달 열기
+  };
+
+  // 로그인 모달 닫기
+  const handleLoginModal = () => {
+    setIsLoginOpen(false); // 로그인 모달 닫기
+  };
+
+  // 리뷰 추가 함수
+  const handleAddReview = async () => {
+    if (!user) {
+      alert("로그인이 필요합니다."); // 로그인되지 않았으면 알림 표시
+      setIsLoginOpen(true); // 로그인 모달 열기
+      setIsWriting(false); // 리뷰 작성 폼 닫기
+      return;
+    }
+
     if (newReview.trim() === "") return;
 
     const newReviewObj = {
-      id: Date.now(),
-      username: "내 댓글",
-      date: new Date().toISOString().split("T")[0],
+      score: rating,
       content: newReview,
-      isEditable: true,
     };
 
-    setUserReviews([newReviewObj, ...userReviews]);
-    setNewReview("");
-    setIsWriting(false);
+    try {
+      // 로그인 후 리뷰 작성 요청
+      const formData = new FormData();
+      formData.append("score", rating);
+      formData.append("content", newReview);
+
+      const response = await axios.post(
+        `http://localhost:8080/mypage/reviews/${id}/create`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true, // 쿠키 포함
+        }
+      );
+
+      // 리뷰가 성공적으로 추가된 후 리뷰 목록 갱신
+      setReviews([response.data, ...reviews]);
+      setNewReview("");
+      setIsWriting(false); // 리뷰 작성 폼 닫기
+      window.location.reload();
+    } catch (error) {
+      console.error("리뷰 작성 중 오류 발생:", error);
+    }
   };
 
-  const handleDeleteReview = (id) => {
-    setUserReviews(userReviews.filter((review) => review.id !== id));
-  };
-
-  const handleEditReview = (id) => {
-    setEditingReviewId(id);
-    const reviewToEdit = userReviews.find((review) => review.id === id);
-    setEditingContent(reviewToEdit?.content || "");
-  };
-
-  const handleSaveEdit = () => {
-    setUserReviews(
-      userReviews.map((review) =>
-        review.id === editingReviewId
-          ? { ...review, content: editingContent }
-          : review
-      )
-    );
-    setEditingReviewId(null);
-    setEditingContent("");
-  };
-
+  // 별점 클릭 시 처리
   const handleStarClick = (index) => {
     setRating(index + 1);
+  };
+
+  // 리뷰 삭제 함수
+  const handleDeleteReview = async (reviewId) => {
+    if (user) {
+      try {
+        // 리뷰 삭제 요청
+        await axios.delete(
+          `http://localhost:8080/mypage/reviews/${reviewId}`,
+          {
+            withCredentials: true, // 쿠키 포함
+          }
+        );
+
+        // 삭제 후 리뷰 목록 갱신
+        setReviews(reviews.filter((review) => review.id !== reviewId));
+        window.location.reload();
+      } catch (error) {
+        console.error("리뷰 삭제 중 오류 발생:", error);
+      }
+    } else {
+      alert("로그인 후 삭제 가능합니다.");
+    }
   };
 
   return (
@@ -84,10 +135,21 @@ const MovieReview = () => {
           <img src={`/image/${detaildata.id}.jpg`} alt={detaildata.title} />
         </S.Card>
         <S.imformation className="imformation">
-          <h2>⭐⭐⭐⭐⭐</h2>
-          <p>평점 : 5</p>
-          <div className="detail">{detaildata.detail}</div>
-          <div className="detail">{detaildata.detail}</div>
+          <h2>
+            {[...Array(5)].map((_, index) => (
+              <span
+                key={index}
+                style={{
+                  color: index < Math.round(averageRating) ? "gold" : "gray",
+                  fontSize: "2rem",
+                }}
+              >
+                ★
+              </span>
+            ))}
+          </h2>
+          <p>평점 : {averageRating || 0}</p>
+          <div className="detail">{detaildata.plot}</div>
         </S.imformation>
       </S.wrapper>
 
@@ -95,83 +157,113 @@ const MovieReview = () => {
         <div className="actor">
           <h1>연기자</h1>
           <S.CastContainer className="cast-container">
-              {actors.map((actor, index) => (
+            {actors.map((actor, index) => (
               <S.ActorCard key={index} className="actor">
                 <img src={actor.img} alt={actor.name} />
                 <p>{actor.name}</p>
-                <p>{actor.role}</p>
               </S.ActorCard>
             ))}
           </S.CastContainer>
         </div>
+
         <div className="comment">
           <div className="review">
             <h1>리뷰</h1>
             <div className="reviewbutton">
-              <button onClick={() => setIsWriting(!isWriting)}>리뷰 작성</button>
+              <button
+                onClick={() => {
+                  if (!user) {
+                    alert("로그인이 필요합니다.");
+                    setIsLoginOpen(true); // 로그인 모달 열기
+                  } else {
+                    setIsWriting(!isWriting); // 로그인 상태면 리뷰 작성 폼 열기
+                  }
+                }}
+              >
+                리뷰 작성
+              </button>
             </div>
           </div>
 
-          {isWriting && (
-            <S.reviewinput className="review-input">
-              <div className="rating">
-                {[...Array(5)].map((_, index) => (
-                  <span
-                    key={index}
-                    className={`star ${index < rating ? "active" : ""}`}
-                    style={{
-                      cursor: "pointer",
-                      color: index < rating ? "gold" : "gray",
-                    }}
-                    onClick={() => handleStarClick(index)}
-                  >
-                    ★
-                  </span>
-                ))}
-              </div>
-              <span>{rating.toFixed(1)}</span>
-              <input
-                placeholder="리뷰를 작성하세요..."
-                value={newReview}
-                onChange={(e) => setNewReview(e.target.value)}
-              />
-              <button onClick={handleAddReview}>작성 완료</button>
-            </S.reviewinput>
-          )}
+          {isWriting ? (
+            user ? (
+              <S.reviewinput className="review-input">
+                <div className="rating">
+                  {[...Array(5)].map((_, index) => (
+                    <span
+                      key={index}
+                      className={`star ${index < rating ? "active" : ""}`}
+                      style={{
+                        cursor: "pointer",
+                        color: index < rating ? "gold" : "gray",
+                      }}
+                      onClick={() => handleStarClick(index)}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
+                <span>{rating.toFixed(1)}</span>
+                <input
+                  placeholder="리뷰를 작성하세요..."
+                  value={newReview}
+                  onChange={(e) => setNewReview(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleAddReview(); // Enter 키가 눌리면 리뷰 작성 완료
+                    }
+                  }}
+                />
+                <button onClick={handleAddReview}>작성 완료</button>
+              </S.reviewinput>
+            ) : (
+              <p>로그인이 필요합니다.</p>
+            )
+          ) : null}
 
           <div className="review-list">
-            {userReviews.map((review) => (
-              <S.reviewitem key={review.id} className="review-item">
-                <div className="review-header">
-                  <span>{review.username}</span>
-                  <span>{review.date}</span>
-                </div>
-
-                {editingReviewId === review.id ? (
-                  <div>
-                    <textarea
-                      value={editingContent}
-                      onChange={(e) => setEditingContent(e.target.value)}
-                    />
-                    <button onClick={handleSaveEdit}>저장</button>
-                    <button onClick={() => setEditingReviewId(null)}>취소</button>
-                  </div>
-                ) : (
-                  <div className="review-content">
-                    {review.content}
-                    {review.isEditable && (
-                      <div className="review-actions">
-                        <button onClick={() => handleEditReview(review.id)}>수정</button>
-                        <button onClick={() => handleDeleteReview(review.id)}>삭제</button>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </S.reviewitem>
-            ))}
+            {reviews.length > 0 ? (
+              [...reviews]
+                .sort((a, b) => {
+                  // 각 review의 user 객체가 존재하는지 체크하고 user.id로 비교
+                  if (a.user && b.user) {
+                    if (a.user.id === user.id) return -1;
+                    if (b.user.id === user.id) return 1;
+                  }
+                  return 0; // user 객체가 없을 경우 기본 정렬
+                })
+                .map((review) => (
+                  <S.reviewitem key={review.id} className="review-item">
+                    <div className="review-header">
+                      <span>{review.user ? review.user.userId : "Unknown User"}</span>
+                      <span>{new Date(review.createDate).toLocaleDateString()}</span>
+                      <span>평점: {review.score}</span>
+                      {user && review.user && review.user.id === user.id && (
+                        <button
+                          style={{
+                            fontSize: "0.8rem",
+                            color: "red",
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleDeleteReview(review.id)}
+                        >
+                          삭제
+                        </button>
+                      )}
+                    </div>
+                    <div className="review-content">{review.content}</div>
+                  </S.reviewitem>
+                ))
+            ) : (
+              <div>리뷰가 없습니다.</div>
+            )}
           </div>
         </div>
       </S.mainpage>
+
+      {isLoginOpen && <Login onClose={handleLoginModal} />}
     </div>
   );
 };

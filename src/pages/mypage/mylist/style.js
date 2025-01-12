@@ -32,29 +32,51 @@ S.RightSection = styled.div`
     border-bottom: solid gray;
   }
 
-  .post-item {
+  .post-item{
+    flex-direction: column;
     align-items: center;
-    min-width: 300px;
-    max-width: 300px;
-    height: 300px;
+    background-color: black;
+    min-width: 318px;
+    max-width: 318px;
+    height: 325px;
     flex-shrink: 0;
-    background-color: #222;
     border-radius: 10px;
-    overflow: hidden;
     position: relative;
     margin: 10px;
-
+    border: 1px solid gray;
     img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
+    width: 318px;
+    height: 168px;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+    p{
+      display: -webkit-box;
+      font-size: 15px;
+      margin-top: 0.5rem;
+      color: gray;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-line-clamp: 3;
+    }
+    h3 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 0.5rem;
+      overflow: hidden;
     }
 
-    p,
-    h3 {
-      margin-top: 0.5rem;
-      color: #fff; 
+    .bottom{
+      color: #888888;
+     width: 100%;
+     position: absolute;
+     bottom: 0;
+     text-align: right;
+     padding: 10px;
     }
   }
 `;
