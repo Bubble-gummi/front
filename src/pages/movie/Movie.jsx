@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const Movie = () => {
   useEffect(()=>{
-    axios.get('http://localhost:8080/main').then((response)=>{
+    axios.get('http://localhost:8080/movies').then((response)=>{
       setData(response.data.movies);
       console.log(response.data.movies)
     })

@@ -4,7 +4,7 @@ const S = {};
 
   S.RightSection = styled.div`
     width: 735px;
-    height: 700px;
+    height: 100%;
     background-color: gray;
 
     & .infoTitle {
