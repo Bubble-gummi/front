@@ -50,12 +50,14 @@ const Main = () => {
             <h2>영화</h2><h2 className='back'>게시판</h2>
           </S.title>
           <div className="post-list">
-            {postdata.map((post) => (
+            {postdata.slice(0,3).map((post) => (
               <div key={post.id} className="post-item">
-                <img src={`/image/${post.movie.id}.jpg`} alt={post.title} />
-                <h3>{post.subject}</h3>
-                <p>{post.content}</p>
-                <p className='bottom'>{post.createDate.split("T")[0]}</p>
+                <Link to={`/movieblog/post/${post.id}`} role='button'  onClick={() => window.scrollTo(0, 0)}>
+                  <img src={`/image/${post.movie.id}.jpg`} alt={post.title} />
+                  <h3>{post.subject}</h3>
+                  <p>{post.content}</p>
+                  <p className='bottom'>{post.createDate.split("T")[0]}</p>
+                </Link>
               </div>
             ))}
           </div>

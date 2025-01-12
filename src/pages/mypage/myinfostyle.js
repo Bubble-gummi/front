@@ -10,7 +10,7 @@ S.Container = styled.div`
 
 S.LeftSection = styled.div`
   width: 250px;
-  height: 700px;
+  height: 100%;
   margin-top: 120px;
   border: solid gray;
 `;

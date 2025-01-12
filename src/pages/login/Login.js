@@ -27,11 +27,22 @@ const Login = ({ onClose, setLoggedIn }) => {
       console.log('로그인 성공', response.data);
       setSuccess('로그인에 성공했습니다!');
       setError('');
-      
+
       // 로그인 성공 시 세션 정보 저장
-      localStorage.setItem('user', JSON.stringify(response.data)); // 로그인 정보 로컬 git 
+      localStorage.setItem('user', JSON.stringify(response.data)); // 로그인 정보 로컬 저장
+
+      // 로그인 성공 후 유저 정보 요청
+      const userResponse = await axios.get('http://localhost:8080/user/nowData', {
+        withCredentials: true, // 쿠키 포함
+      });
+
+      console.log('유저 정보:', userResponse.data.user); // 유저 정보 로그 출력
+
+      // 로컬 스토리지에 유저 정보 저장
+      localStorage.setItem('userDetail', JSON.stringify(userResponse.data.user));
+
       onClose(); // 로그인 모달 닫기
-      navigate('/', { state: { userDetailData: response.data } }); // 메인 페이지로 이동
+      navigate('/', { state: { userDetailData: userResponse.data.user } }); // 메인 페이지로 이동
       window.location.reload(); // 페이지 새로고침
 
     } catch (error) {
